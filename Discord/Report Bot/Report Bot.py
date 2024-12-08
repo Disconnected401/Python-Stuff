@@ -24,8 +24,6 @@ logo = r"""
         
 """
 
-
-
 with open('tokens.txt', 'r') as file:
     tokens = [line.strip() for line in file]
 

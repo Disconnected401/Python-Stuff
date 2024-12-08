@@ -1,6 +1,13 @@
 import requests
+from colorama import Fore
 import json
 import time
+
+R = Fore.RED
+Y = Fore.YELLOW
+green = Fore.GREEN
+W = Fore.WHITE
+gray = Fore.LIGHTBLACK_EX
 
 report_delay = 1
 
@@ -29,7 +36,7 @@ def user_report(token, target):
         "variant": "1",
         "language": "en",
         "breadcrumbs": [48, 10, 8, 12],
-        "elements": {"user_profile_select": ["descriptors"]},
+        "elements": {"user_profile_select": ["photos",  "name",  "descriptors"]},
         "user_id": target,
         "name": "user"
     }
@@ -37,11 +44,16 @@ def user_report(token, target):
     headers = headers_template.copy()
     headers["authorization"] = token
     response = requests.post(url, headers=headers, data=json.dumps(data))
+    
+    token_parts = token.split('.')
+    masked_token = token_parts[0] + '#' + '#' * len(token_parts[1]) + '#' + '#' * len(token_parts[2])
+    
     if response.status_code == 429:
-        print("[!] Rate limited, waiting 30 seconds")
+        print(f"[{R}-{W}] Token > {gray}{masked_token}{W} Status Code > {gray}{response.status_code}{W}")
+        print(f"[{Y}!{W}] Rate limited, waiting 30 seconds")
         report_delay += 0.5
-        print("[!] Delay increased to", report_delay)
+        print(f"[{Y}!{W}] Delay increased to", report_delay)
         time.sleep(30)
     else:
-        print(f"[+] Token > {token} Status Code > {response.status_code}")
+        print(f"[{green}+{W}] Token > {gray}{masked_token}{W} Status Code > {gray}{response.status_code}{W}")
     time.sleep(report_delay)
