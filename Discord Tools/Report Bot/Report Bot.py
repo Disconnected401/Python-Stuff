@@ -1,4 +1,4 @@
-from Methods import Reports
+import Reports
 import os
 
 os.system("title Report Bot")
